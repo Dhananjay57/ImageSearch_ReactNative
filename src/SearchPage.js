@@ -13,26 +13,22 @@ import {
 
 function urlForQueryAndPage(key, value, pageNumber) {
     const data = {
-        country: 'uk',
-        pretty: '1',
-        encoding: 'json',
-        listing_type: 'buy',
-        action: 'search_listings',
-        page: pageNumber,
+        key: '10985878-a2d1d5d0d80e8a93bba360918',
+        page: pageNumber
     };
     data[key] = value;
   
     const querystring = Object.keys(data)
       .map(key => key + '=' + encodeURIComponent(data[key]))
       .join('&');
-  
-    return 'https://api.nestoria.co.uk/api?' + querystring;
-  }
+
+    return 'https://pixabay.com/api/?' + querystring;
+}
   
   type Props = {};
   export default class SearchPage extends Component<Props> {
     static navigationOptions = {
-      title: 'Property Finder',
+      title: 'ImageSearch',
     };
   
     constructor(props) {
@@ -49,11 +45,10 @@ function urlForQueryAndPage(key, value, pageNumber) {
     };
   
     _executeQuery = (query) => {
-      console.log(query);
       this.setState({ isLoading: true });
       fetch(query)
         .then(response => response.json())
-        .then(json => this._handleResponse(json.response))
+        .then(json => this._handleResponse(json.hits))
         .catch(error =>
             this.setState({
               isLoading: false,
@@ -62,15 +57,15 @@ function urlForQueryAndPage(key, value, pageNumber) {
     };
   
     _onSearchPressed = () => {
-      const query = urlForQueryAndPage('place_name', this.state.searchString, 1);
+      const query = urlForQueryAndPage('q', encodeURIComponent(this.state.searchString), 1);
       this._executeQuery(query);
     };
   
     _handleResponse = (response) => {
       this.setState({ isLoading: false , message: '' });
-      if (response.application_response_code.substr(0, 1) === '1') {
+      if (response) {
         this.props.navigation.navigate(
-            'Results', {listings: response.listings});
+            'Results', {listings: response});
       } else {
         this.setState({ message: 'Location not recognized; please try again.'});
       }
@@ -83,7 +78,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
       return (
         <View style={styles.container}>
           <Text style={styles.description}>
-            Search images from fliker!
+            Search images from Pixayay.com!
           </Text>
           <View style={styles.flowRight}>
             <TextInput
@@ -91,7 +86,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
               style={styles.searchInput}
               value={this.state.searchString}
               onChange={this._onSearchTextChanged}
-              placeholder='Search via name or postcode'/>
+              placeholder='Search images'/>
             <Button
               onPress={this._onSearchPressed}
               color='#48BBEC'

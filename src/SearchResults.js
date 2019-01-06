@@ -16,12 +16,13 @@ class ListItem extends React.PureComponent {
     }
   
     render() {
+      const item = this.props.item;
       return (
         <TouchableHighlight
           onPress={this._onPress}
           underlayColor='#dddddd'>
             <View style={styles.rowContainer}>
-              <Image style={styles.thumb} source={{ uri: item.img_url }} />
+              <Image style={styles.thumb} source={{ uri: item.largeImageURL }} />
             </View>
         </TouchableHighlight>
       );
