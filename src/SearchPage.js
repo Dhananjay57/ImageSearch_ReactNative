@@ -175,17 +175,16 @@ function urlForQueryAndPage(key, value, pageNumber) {
       color: '#48BBEC',
     },
     image: {
-      width: 217,
-      height: 138,
+        flex:1
+    
     },
     rowContainer: {
         flexDirection: 'row',
         padding: 10
       },
       thumb: {
-        
-        width: width,
-        height: 80,
+        width: 200,
+        height: 100,
         marginRight: 10
       },
   });
