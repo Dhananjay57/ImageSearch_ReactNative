@@ -148,14 +148,14 @@ function urlForQueryAndPage(key, value, pageNumber) {
   
   const styles = StyleSheet.create({
     description: {
-      marginBottom: 20,
+      marginBottom: 10,
       fontSize: 18,
       textAlign: 'center',
       color: '#656565'
     },
     container: {
-      padding: 30,
-      marginTop: 65,
+      padding: 20,
+      marginTop: 10,
       alignItems: 'center'
     },
     flowRight: {
@@ -176,14 +176,14 @@ function urlForQueryAndPage(key, value, pageNumber) {
     },
     image: {
         flex:1
-    
+
     },
     rowContainer: {
         flexDirection: 'row',
-        padding: 10
+        padding: 5
       },
       thumb: {
-        width: 200,
+        width: 300,
         height: 100,
         marginRight: 10
       },
