@@ -7,11 +7,9 @@ import {
 } from 'react-navigation';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import SearchPage from './src/SearchPage'
-import SearchResults from './src/SearchResults'
 
 const AppNavigator = createStackNavigator({
-  Home: { screen: SearchPage },
-  Results:{ screen: SearchResults}
+  Home: { screen: SearchPage }
 });
 export default createAppContainer(AppNavigator);
 
