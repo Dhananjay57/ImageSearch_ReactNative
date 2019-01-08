@@ -11,7 +11,7 @@ import SearchResults from './src/SearchResults'
 
 const AppNavigator = createStackNavigator({
   Home: { screen: SearchPage },
-  Results:{ screen: SearchResults}
+ // Results:{ screen: SearchResults}
 });
 export default createAppContainer(AppNavigator);
 

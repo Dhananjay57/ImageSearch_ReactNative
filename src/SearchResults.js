@@ -8,8 +8,8 @@ import {
   TouchableHighlight,
   FlatList,
   Text,
+  ListView,
 } from 'react-native';
-
 class ListItem extends React.PureComponent {
     _onPress = () => {
       this.props.onPressItem(this.props.index);
@@ -87,4 +87,5 @@ class ListItem extends React.PureComponent {
       flexDirection: 'row',
       padding: 10
     },
+    
   });

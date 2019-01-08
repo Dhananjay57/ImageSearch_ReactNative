@@ -9,7 +9,29 @@ import {
   Button,
   ActivityIndicator,
   Image,
+  TouchableHighlight,
+  FlatList,
 } from 'react-native';
+
+class ListItem extends React.PureComponent {
+    _onPress = () => {
+        this.props.onPressItem(this.props.index);
+      }
+      
+    render() {
+         const item = this.props.item;
+         console.log("item##:"+item.largeImageURL);
+      return (
+        <TouchableHighlight
+          onPress={this._onPress}
+          underlayColor='#dddddd'>
+            <View style={styles.rowContainer}>
+              <Image style={styles.thumb} source={{ uri: item.largeImageURL }} />
+            </View>
+        </TouchableHighlight>
+      );
+    }
+  }
 
 function urlForQueryAndPage(key, value, pageNumber) {
     const data = {
@@ -36,6 +58,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
       this.state = {
         searchString: 'london',
         isLoading: false,
+        dataSource: null,
         message: '',
       };
     }
@@ -64,21 +87,38 @@ function urlForQueryAndPage(key, value, pageNumber) {
     _handleResponse = (response) => {
       this.setState({ isLoading: false , message: '' });
       if (response) {
-        this.props.navigation.navigate(
-            'Results', {listings: response});
+          this.setState({
+              dataSource:response, isLoading:true
+            
+          })
+        // this.props.navigation.navigate(
+        //     'Results', {listings: response});
       } else {
         this.setState({ message: 'Location not recognized; please try again.'});
       }
     };
+    _keyExtractor = (item, index) => index.toString();
+    _renderItem = ({item, index}) => (
+        <ListItem
+          item={item}
+          index={index}
+        onPressItem={this._onPressItem}
+        />
+      );
+      _onPressItem = (index) => {
+        console.log("Pressed row: "+index);
+      }
   
     render() {
         const spinner = this.state.isLoading ?
         <ActivityIndicator size='large'/> : null;
-  
+        // const{params} = this.state.dataSource;
+        // console.log("data :"+params);
+
       return (
         <View style={styles.container}>
           <Text style={styles.description}>
-            Search images from Pixayay.com!
+            Search images from Pixabay.com
           </Text>
           <View style={styles.flowRight}>
             <TextInput
@@ -95,7 +135,13 @@ function urlForQueryAndPage(key, value, pageNumber) {
           </View>
           {spinner}
           <Text style={styles.description}>{this.state.message}</Text>
+           <FlatList
+          data={this.state.dataSource}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+        />
         </View>
+        
       );
     }
   }
@@ -132,4 +178,14 @@ function urlForQueryAndPage(key, value, pageNumber) {
       width: 217,
       height: 138,
     },
+    rowContainer: {
+        flexDirection: 'row',
+        padding: 10
+      },
+      thumb: {
+        
+        width: width,
+        height: 80,
+        marginRight: 10
+      },
   });
