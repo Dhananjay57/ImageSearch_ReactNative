@@ -58,7 +58,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
     constructor(props) {
       super(props);
       this.state = {
-        searchString: 'london',
+        searchString: 'flower',
         isLoading: false,
         dataSource: null,
         searchNumber:'2',
