@@ -11,6 +11,8 @@ import {
   Image,
   TouchableHighlight,
   FlatList,
+  AsyncStorage,
+  NetInfo,
   } from 'react-native';
   const pageNumber = 1
   const numColumns = 3
@@ -61,6 +63,8 @@ function urlForQueryAndPage(key, value, pageNumber) {
         searchString: 'flower',
         isLoading: false,
         dataSource: null,
+        localDataSource: null,
+        isConnected: null,
         searchNumber:'2',
         message: '',
       };
@@ -86,18 +90,44 @@ function urlForQueryAndPage(key, value, pageNumber) {
     };
   
     _onSearchPressed = () => {
+      NetInfo.getConnectionInfo().then((connectionInfo) => {
+        this.setState({isConnected: connectionInfo.type !== 'none'})
+      })
+      const { isConnected } = this.state
+  if (isConnected) {
       const query = urlForQueryAndPage('q', encodeURIComponent(this.state.searchString), pageNumber);
       this._executeQuery(query);
       this.setState({numColumns: this.state.searchNumber})
+    }else{
+     this._retrieveData();
     };
-  
+  }
+    _storeData(response) {
+      try {
+         AsyncStorage.setItem(this.state.searchString,response);
+      } catch (error) {
+      }
+    }
+    _retrieveData(){
+      try {
+        const value =  AsyncStorage.getItem(this.state.searchString);
+        if (value !== null) {
+          // We have data!!
+          this.setState({dataSource: value})
+        }
+       } catch (error) {
+         // Error retrieving data
+       }
+    }
     _handleResponse = (response) => {
       this.setState({ isLoading: false , message: '' });
       if (response) {
           this.setState({
               dataSource:response, isLoading:false
-            
+              
           })
+          this._storeData(response);
+        
         // this.props.navigation.navigate(
         //     'Results', {listings: response});
       } else {
@@ -109,7 +139,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
         <ListItem
           item={item}
           index={index}
-        onPressItem={this._onPressItem}
+          onPressItem={this._onPressItem}
         />
       );
       onEndReached = () => {
@@ -119,7 +149,6 @@ function urlForQueryAndPage(key, value, pageNumber) {
           this._onSearchPressed('q', encodeURIComponent(this.state.searchString), pageNumber+1)
           let newData = dataSource.concat(this.dataSource)
           this.setState({dataSource: newData})
-          console.log('newData##', newData)
           this.onEndReachedCalledDuringMomentum = true;
         }
       }
@@ -130,9 +159,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
     render() {
         const spinner = this.state.isLoading ?
         <ActivityIndicator size='large'/> : null;
-        // const{params} = this.state.dataSource;
-        // console.log("data :"+params);
-
+       
       return (
         <View style={styles.container}>
           <Text style={styles.description}>
@@ -165,7 +192,7 @@ function urlForQueryAndPage(key, value, pageNumber) {
           data={this.state.dataSource}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
-         // onEndReached={this.onEndReached}
+          onEndReached={this.onEndReached}
           onEndReachedThreshold={0.5}
           onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false }}
         />
